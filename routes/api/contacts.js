@@ -22,6 +22,18 @@ const addSchema = Joi.object({
   }),
 });
 
+const putSchema = Joi.object({
+  name: Joi.string().messages({
+    "string.empty": `"name" cannot be empty`,
+  }),
+  email: Joi.string().email().messages({
+    "string.empty": `"email" cannot be empty`,
+  }),
+  phone: Joi.string().messages({
+    "string.empty": `"phone" cannot be empty`,
+  }),
+});
+
 router.get("/", async (req, res, next) => {
   try {
     const result = await contacts.listContacts();
@@ -72,7 +84,10 @@ router.delete("/:contactId", async (req, res, next) => {
 
 router.put("/:contactId", async (req, res, next) => {
   try {
-    const { error } = addSchema.validate(req.body);
+    if (!Object.keys(req.body).length) {
+      throw HttpError(400, `missing fields`);
+    }
+    const { error } = putSchema.validate(req.body);
     if (error) {
       throw HttpError(400, error.message);
     }
