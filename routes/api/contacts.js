@@ -1,11 +1,13 @@
 const express = require("express");
 
 const { validateBody } = require("../../utils");
+const { validateParams } = require("../../utils");
 
 const {
   addSchema,
   putSchema,
   updateFavoriteSchema,
+  ParamsSchema,
 } = require("../../models/contact");
 
 const {
@@ -20,12 +22,18 @@ const {
 const router = express.Router();
 
 router.get("/", listCont);
-router.get("/:contactId", getContById);
+router.get("/:contactId", validateParams(ParamsSchema), getContById);
 router.post("/", validateBody(addSchema), addCont);
-router.delete("/:contactId", removeCont);
-router.put("/:contactId", validateBody(putSchema), updateCont);
+router.delete("/:contactId", validateParams(ParamsSchema), removeCont);
+router.put(
+  "/:contactId",
+  validateParams(ParamsSchema),
+  validateBody(putSchema),
+  updateCont
+);
 router.patch(
   "/:contactId/favorite",
+  validateParams(ParamsSchema),
   validateBody(updateFavoriteSchema),
   updateFavoriteCont
 );

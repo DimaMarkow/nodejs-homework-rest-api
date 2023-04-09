@@ -69,6 +69,10 @@ const updateFavoriteSchema = Joi.object({
   }),
 });
 
+const ParamsSchema = Joi.object({
+  contactId: Joi.string().alphanum().min(24).max(24).required(),
+});
+
 const Contact = model("contact", contactSchema);
 
 module.exports = {
@@ -76,4 +80,5 @@ module.exports = {
   addSchema,
   putSchema,
   updateFavoriteSchema,
+  ParamsSchema,
 };
