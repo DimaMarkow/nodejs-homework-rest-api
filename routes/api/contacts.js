@@ -1,9 +1,14 @@
 const express = require("express");
 
+const { validateBody } = require("../../utils");
+const { validateParams } = require("../../utils");
+
 const {
-  addContactValidation,
-  putContactValidation,
-} = require("../../middlewares/validateData");
+  addSchema,
+  putSchema,
+  updateFavoriteSchema,
+  ParamsSchema,
+} = require("../../models/contact");
 
 const {
   listCont,
@@ -11,14 +16,26 @@ const {
   addCont,
   removeCont,
   updateCont,
+  updateFavoriteCont,
 } = require("../../controllers/contactsController");
 
 const router = express.Router();
 
 router.get("/", listCont);
-router.get("/:contactId", getContById);
-router.post("/", addContactValidation, addCont);
-router.delete("/:contactId", removeCont);
-router.put("/:contactId", putContactValidation, updateCont);
+router.get("/:contactId", validateParams(ParamsSchema), getContById);
+router.post("/", validateBody(addSchema), addCont);
+router.delete("/:contactId", validateParams(ParamsSchema), removeCont);
+router.put(
+  "/:contactId",
+  validateParams(ParamsSchema),
+  validateBody(putSchema),
+  updateCont
+);
+router.patch(
+  "/:contactId/favorite",
+  validateParams(ParamsSchema),
+  validateBody(updateFavoriteSchema),
+  updateFavoriteCont
+);
 
 module.exports = router;
