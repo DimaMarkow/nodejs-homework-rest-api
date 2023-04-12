@@ -14,7 +14,6 @@
     "dotenv": "^16.0.3",
     "express": "4.17.1",
     "joi": "^17.9.1",
-    "joi-phone-number": "^5.1.1",
     "mongoose": "^7.0.3",
     "morgan": "1.10.0",
     "nanoid": "^3.3.4"

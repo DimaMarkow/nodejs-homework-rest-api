@@ -3,6 +3,8 @@ const express = require("express");
 const { validateBody } = require("../../utils");
 const { validateParams } = require("../../utils");
 
+const isValidId = require("../../middlewares/isValidId");
+
 const {
   addSchema,
   putSchema,
@@ -22,9 +24,9 @@ const {
 const router = express.Router();
 
 router.get("/", listCont);
-router.get("/:contactId", validateParams(ParamsSchema), getContById);
+router.get("/:contactId", isValidId, getContById);
 router.post("/", validateBody(addSchema), addCont);
-router.delete("/:contactId", validateParams(ParamsSchema), removeCont);
+router.delete("/:contactId", isValidId, removeCont);
 router.put(
   "/:contactId",
   validateParams(ParamsSchema),
@@ -33,7 +35,7 @@ router.put(
 );
 router.patch(
   "/:contactId/favorite",
-  validateParams(ParamsSchema),
+  isValidId,
   validateBody(updateFavoriteSchema),
   updateFavoriteCont
 );
