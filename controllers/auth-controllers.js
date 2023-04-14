@@ -68,9 +68,32 @@ const logout = async (req, res) => {
   res.status(204).json({ message: "No Content" });
 };
 
+const subscriptionUpdate = async (req, res) => {
+  if (!Object.keys(req.body).length) {
+    throw HttpError(400, `missing fields`);
+  }
+
+  const { _id, email } = req.user;
+  const { subscription } = req.body;
+
+  const result = await User.findByIdAndUpdate(
+    _id,
+    { email, subscription },
+    { new: true }
+  );
+  if (!result) {
+    throw HttpError(404);
+  }
+  res.json({
+    email,
+    subscription,
+  });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  subscriptionUpdate: ctrlWrapper(subscriptionUpdate),
 };

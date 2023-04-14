@@ -6,13 +6,24 @@ const { HttpError } = require("../helpers");
 
 const listCont = async (req, res) => {
   const { _id: owner } = req.user;
+
   const { page = 1, limit = 20 } = req.query;
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner }, "", {
-    skip,
-    limit,
-  }).populate("owner", "email subscription");
-  res.json(result);
+
+  if (!req.query.favorite) {
+    const result = await Contact.find({ owner }, "", {
+      skip,
+      limit,
+    }).populate("owner", "email subscription");
+    res.json(result);
+  } else {
+    console.log("Есть фильтр по избранному");
+    const result = await Contact.find({ owner, favorite: "true" }, "", {
+      skip,
+      limit,
+    }).populate("owner", "email subscription");
+    res.json(result);
+  }
 };
 
 const getContById = async (req, res) => {
