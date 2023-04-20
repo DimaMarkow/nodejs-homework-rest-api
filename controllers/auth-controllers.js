@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const fs = require("fs/promises");
 const path = require("path");
+const Jimp = require("jimp");
 
 const { User } = require("../models/user");
 
@@ -102,8 +103,22 @@ const subscriptionUpdate = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
+  if (!req.file) {
+    throw HttpError(400, `Bad Request`);
+  }
   const { _id } = req.user;
   const { path: tempUpload, filename } = req.file;
+
+  await Jimp.read(tempUpload)
+    .then((filename) => {
+      return filename
+        .resize(250, 250) // resize
+        .write(tempUpload); // save
+    })
+    .catch(() => {
+      throw HttpError(400, `missing file`);
+    });
+
   const avatarName = `${_id}_${filename}`;
   const resultUpload = path.join(avatarsDir, avatarName);
   await fs.rename(tempUpload, resultUpload);

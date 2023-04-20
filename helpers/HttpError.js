@@ -13,3 +13,4 @@ const HttpError = (status, message = errorMessages[status]) => {
 };
 
 module.exports = HttpError;
+
