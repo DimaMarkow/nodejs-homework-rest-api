@@ -9,6 +9,7 @@ const {
   registerSchema,
   loginSchema,
   subscriptionSchema,
+  verifySchema,
 } = require("../../models/user");
 
 const {
@@ -18,11 +19,18 @@ const {
   logout,
   subscriptionUpdate,
   updateAvatar,
+  verifyEmail,
+  resendVerifyEmail,
 } = require("../../controllers/auth-controllers");
 
 const router = express.Router();
 
 router.post("/register", validateBody(registerSchema), register);
+
+router.get("/verify/:verificationToken", verifyEmail);
+
+router.post("/verify", validateBody(verifySchema), resendVerifyEmail);
+
 router.post("/login", validateBody(loginSchema), login);
 
 router.get("/current", authenticate, getCurrent);
